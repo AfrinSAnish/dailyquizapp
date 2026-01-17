@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "335477338925",
+    "firebase_url": "https://quiz-a3a7b-default-rtdb.firebaseio.com",
+    "project_id": "quiz-a3a7b",
+    "storage_bucket": "quiz-a3a7b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335477338925:android:7df682f79d6067a9a659a4",
+        "android_client_info": {
+          "package_name": "com.afrin.quiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx3-po40yW2TpsNy60uYdiOmDd3IOHO8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
