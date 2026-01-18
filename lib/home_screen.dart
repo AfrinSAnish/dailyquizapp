@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,12 +26,35 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Daily Coding Question"),
       ),
-      body: Center(
-        child: Text(
-          "Today ID: $todayId",
-          style: const TextStyle(fontSize: 20),
-        ),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection("daily_questions")
+            .doc(todayId)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return Center(
+              child: Text("No question found for: $todayId"),
+            );
+          }
+
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          final title = (data["title"] ?? "Untitled") as String;
+
+          return Center(
+            child: Text(
+              "Today's Question: $title",
+              style: const TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+          );
+        },
       ),
+
     );
   }
 }
