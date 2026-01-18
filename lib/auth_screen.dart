@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home_screen.dart';
+
 
 
 // AuthScreen is a StatefulWidget because
@@ -57,12 +59,17 @@ class _AuthScreenState extends State<AuthScreen> {
 
 
       // If success, we’ll go to next screen later
-      print(isLoginMode ? "Login success" : "Signup success");
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message ?? "Login failed";
+        errorMessage = "${e.code}: ${e.message ?? "Auth failed"}";
       });
-    } catch (e) {
+    }catch (e) {
       setState(() {
         errorMessage = "Something went wrong";
       });
