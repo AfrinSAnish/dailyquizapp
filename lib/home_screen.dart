@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
-            .collection("daily_questions")
+            .collection("daily_questions_public")
             .doc(todayId)
             .get(),
         builder: (context, snapshot) {
@@ -62,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
               .collection("attempts")
               .doc(todayId);
 
-          final problem = (data["problem"] ?? "") as String;
-          final solution = (data["solution"] ?? "") as String;
+          final problem = (data["prompt"] ?? "") as String;
+          final solution = (data["solution"] ?? data["examples"] ?? "") as String;
 
           return FutureBuilder<DocumentSnapshot>(
             future: attemptRef.get(),
