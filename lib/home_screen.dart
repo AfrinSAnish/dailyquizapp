@@ -81,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView(
                   children: [
                     Text(
+                      "Date: $todayId",
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    Text(
                       title,
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
