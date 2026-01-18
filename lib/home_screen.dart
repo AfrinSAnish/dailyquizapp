@@ -52,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
+          final difficulty = data["difficulty"] ?? "Unknown";
+          final topic = data["topic"] ?? "General";
+
           final title = (data["title"] ?? "Untitled") as String;
 
           final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -99,6 +102,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 8),
                     Text(problem),
                     const SizedBox(height: 20),
+
+                    const SizedBox(height: 8),
+
+                    Row(
+                      children: [
+                        Chip(
+                          label: Text(difficulty),
+                          backgroundColor: Colors.blue.shade50,
+                        ),
+                        const SizedBox(width: 8),
+                        Chip(
+                          label: Text(topic),
+                          backgroundColor: Colors.green.shade50,
+                        ),
+                      ],
+                    ),
+
 
                     if (!hasAttempt) ...[
                       const Text(
