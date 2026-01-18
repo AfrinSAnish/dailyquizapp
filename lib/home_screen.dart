@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String getTodayId() {
+    final now = DateTime.now();
+    final y = now.year.toString();
+    final m = now.month.toString().padLeft(2, '0');
+    final d = now.day.toString().padLeft(2, '0');
+    return "$y-$m-$d";
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final todayId = getTodayId();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Daily Coding Question"),
+      ),
       body: Center(
         child: Text(
-          "Today's Question",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          "Today ID: $todayId",
+          style: const TextStyle(fontSize: 20),
         ),
       ),
     );
