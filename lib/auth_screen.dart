@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 // AuthScreen is a StatefulWidget because
 // the screen will change based on user input (email, password)
@@ -20,22 +22,50 @@ class AuthScreen extends StatefulWidget {
 //it is a type of constraintt
 //_AuthScreenState is a State object that belongs to AuthScreen.
 class _AuthScreenState extends State<AuthScreen> {
+  //The leading _ means its private to this file and its a flutter convention
+
   //the final reference wont change, TextEditingController listens to text input
-  //emailController.text gives you email
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-//The leading _ means its private to this file and its a flutter convention
-  // build() tells Flutter what to draw on the screen
-  // BuildContext tells where this widget exists in the app tree
 
-  void onLoginPressed() {
-    final email = emailController.text;
-    final password = passwordController.text;
+  bool isLoading = false;
+  String? errorMessage;
 
-    print("Email: $email");
-    print("Password: $password");
+
+  Future<void> onLoginPressed() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // If success, we’ll go to next screen later
+      print("Login success");
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message ?? "Login failed";
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = "Something went wrong";
+      });
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
+  // build() tells Flutter what to draw on the screen
+  // BuildContext tells where this widget exists in the app tree
   @override
   Widget build(BuildContext context) {
 
@@ -43,48 +73,52 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Center(
         // Center places its child in the middle of the screen
-        child: Column(
-          // Column stacks widgets vertically
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Login',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              //connects UI to the memory
-              controller: emailController,
-              //shows email keyboard
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                //the "Email" label
-                labelText: 'Email',
-                //clean input box
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            TextField(
-              controller: passwordController,
-              obscureText: true, //shows dots instead of the text
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            ElevatedButton(
-              onPressed: onLoginPressed,
-              child: const Text('Login'),
-            ),
+              if (errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ],
 
-          ],
+              ElevatedButton(
+                onPressed: isLoading ? null : onLoginPressed,
+                child: Text(isLoading ? "Logging in..." : "Login"),
+              ),
+            ],
+          ),
         ),
       ),
     );
