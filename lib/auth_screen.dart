@@ -27,6 +27,15 @@ class _AuthScreenState extends State<AuthScreen> {
 //The leading _ means its private to this file and its a flutter convention
   // build() tells Flutter what to draw on the screen
   // BuildContext tells where this widget exists in the app tree
+
+  void onLoginPressed() {
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    print("Email: $email");
+    print("Password: $password");
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -68,6 +77,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 24),
+
+            ElevatedButton(
+              onPressed: onLoginPressed,
+              child: const Text('Login'),
+            ),
+
           ],
         ),
       ),
