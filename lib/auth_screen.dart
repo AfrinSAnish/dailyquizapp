@@ -23,6 +23,7 @@ class AuthScreen extends StatefulWidget {
 //_AuthScreenState is a State object that belongs to AuthScreen.
 class _AuthScreenState extends State<AuthScreen> {
   //The leading _ means its private to this file and its a flutter convention
+  bool isLoginMode = true;
 
   //the final reference wont change, TextEditingController listens to text input
   final TextEditingController emailController = TextEditingController();
@@ -42,13 +43,21 @@ class _AuthScreenState extends State<AuthScreen> {
     });
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      if (isLoginMode) {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      }
+
 
       // If success, we’ll go to next screen later
-      print("Login success");
+      print(isLoginMode ? "Login success" : "Signup success");
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message ?? "Login failed";
@@ -79,7 +88,7 @@ class _AuthScreenState extends State<AuthScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Login',
+                isLoginMode ? 'Login' : 'Sign Up',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -115,7 +124,25 @@ class _AuthScreenState extends State<AuthScreen> {
 
               ElevatedButton(
                 onPressed: isLoading ? null : onLoginPressed,
-                child: Text(isLoading ? "Logging in..." : "Login"),
+                child: Text(
+                  isLoading
+                      ? "Please wait..."
+                      : (isLoginMode ? "Login" : "Sign Up"),
+                ),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isLoginMode = !isLoginMode;
+                    errorMessage = null;
+                  });
+                },
+                child: Text(
+                  isLoginMode
+                      ? "New here? Create an account"
+                      : "Already have an account? Login",
+                ),
               ),
             ],
           ),
